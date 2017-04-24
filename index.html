@@ -69,7 +69,7 @@
 									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='advisorShow' onchange='update(this)' value='"+data[i].advisorShow+"'/></td>");
 									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='wechatShow' onchange='update(this)' value='"+data[i].wechatShow+"'/></td>");
 									htmls.push("</tr>");
-							$(".content").append(htmls.join(''));
+							$("#tbody").append(htmls.join(''));
 			        	}
 			        }else{
 			        	$(".content").append(data.message);
