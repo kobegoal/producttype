@@ -69,15 +69,15 @@
 									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='advisorShow' onchange='update(this)' value='"+data[i].advisorShow+"'/></td>");
 									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='wechatShow' onchange='update(this)' value='"+data[i].wechatShow+"'/></td>");
 									htmls.push("</tr>");
-							$("#tbody").append(htmls.join(''));
+							$(".content").append(htmls.join(''));
 			        	}
 			        }else{
-			        	$("#tbody").append(data.message);
+			        	$(".content").append(data.message);
 			        }
 			     },
 			     error:function(XMLHttpRequest, textStatus, errorThrown) {
 			     	//document.write(textStatus);
-			     	$("#tbody").append("操作失败！");
+			     	$(".content").append("操作失败！");
 			     }});
 		});
 
