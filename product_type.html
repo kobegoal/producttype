@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>作品类型处理</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8"/>
+	<link rel="stylesheet" href="reset.css" type="text/css" media="screen" charset="utf-8"/>
+	<script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+	<script type="text/javascript">
+		function getQueryString(name)
+		{
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		}
+
+		var env = getQueryString("env");
+		var password = getQueryString("pwd");
+		var domain = "";
+		switch(env){
+			case 'official':
+				domain="http://platform.5rs.me";
+				break;
+			case 'uat':
+				domain="http://platform.wechuban.com";
+				break;
+			case 'test':
+				domain="http://platform.techdc.cn";
+				break;
+			case 'develop':
+			default:
+				domain = "http://platform.chubanyun.me";
+				break;
+
+		}
+   		var url = domain+"/resourcecenter/v1.0/productType/";
+		$(document).ready(function(){
+		     $.ajax({
+			     url:url+"getAllProTypes?password="+password,
+			     dataType:'json',
+			     processData: false,
+			     type:'get',
+			     success:function(data){
+			        if(data.errCode==0){
+			        	var data = data.data;
+			        	for(var i=0;i<data.length;i++){
+			        		var htmls = new Array();
+			        		htmls.push("<tr>");
+					        		htmls.push("<td>"+data[i].id+"</td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='parentTypeId' onchange='update(this)' value='"+data[i].parentTypeId+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='typeCode' onchange='update(this)' value='"+data[i].typeCode+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='typeName' onchange='update(this)' value='"+data[i].typeName+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='typeCategory' onchange='update(this)' value='"+data[i].typeCategory+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='hasTable' onchange='update(this)' value='"+data[i].hasTable+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='tableName' onchange='update(this)' value='"+data[i].tableName+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='description' onchange='update(this)' value='"+data[i].description+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='createdByUserLogin' onchange='update(this)' value='"+data[i].createdByUserLogin+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='createdDate' onchange='update(this)' value='"+data[i].createdDate+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='lastModifiedByUserLogin' onchange='update(this)' value='"+data[i].lastModifiedByUserLogin+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='string' name='lastModifiedDate' onchange='update(this)' value='"+data[i].lastModifiedDate+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='isVirtual' onchange='update(this)' value='"+data[i].isVirtual+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='isOpen' onchange='update(this)' value='"+data[i].isOpen+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='sequenceNum' onchange='update(this)' value='"+data[i].sequenceNum+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='version' onchange='update(this)' value='"+data[i].version+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='merchantShow' onchange='update(this)' value='"+data[i].merchantShow+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='agentShow' onchange='update(this)' value='"+data[i].agentShow+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='channelShow' onchange='update(this)' value='"+data[i].channelShow+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='advisorShow' onchange='update(this)' value='"+data[i].advisorShow+"'/></td>");
+									htmls.push("<td><input typeId='"+data[i].id+"' numOrString='num' name='wechatShow' onchange='update(this)' value='"+data[i].wechatShow+"'/></td>");
+									htmls.push("</tr>");
+							$("#tbody").append(htmls.join(''));
+			        	}
+			        }else{
+			        	$("#tbody").append(data.message);
+			        }
+			     },
+			     error:function(XMLHttpRequest, textStatus, errorThrown) {
+			     	//document.write(textStatus);
+			     	$("#tbody").append("操作失败！");
+			     }});
+		});
+
+   		function update(o){
+   			//alert(o.name+","+o.value);
+   			var numOrString=o.getAttribute("numOrString");
+   			var attr = "'"+o.name+"'";
+   			var val = numOrString=='num'?o.value:'"'+o.value+'"';
+   			var data = '{"id":'+o.getAttribute("typeId")+',"'+o.name+'":'+(numOrString=='num'?o.value:'"'+o.value+'"')+'}';
+   			//alert(encodeURI(url+"update?data="+data));
+   			$.ajax({
+			     url:encodeURI(url+"update?password="+password+"&data="+data),
+			     dataType:'json',
+			     processData: false, 
+			     type:'get',
+			     success:function(data){
+			     	alert(data.message);
+			     	location.reload();
+			     },
+			     error:function(XMLHttpRequest, textStatus, errorThrown) {
+			     	alert("操作失败！");
+			     }});
+   		}
+	</script>
+</head>
+<body>
+<div class="col w10 last">
+<div class="content">
+<table>
+<tbody id="tbody">
+<tr>
+<th>ID</th>
+<th>PARENT_TYPE_ID</th>
+<th>TYPE_CODE</th>
+<th>TYPE_NAME</th>
+<th>TYPE_CATEGORY</th>
+<th>HAS_TABLE</th>
+<th>TABLE_NAME</th>
+<th>DESCRIPTION</th>
+<th>CREATED_BY_USER_LOGIN</th>
+<th>CREATED_DATE</th>
+<th>LAST_MODIFIED_BY_USER_LOGIN</th>
+<th>LAST_MODOFIED_DATE</th>
+<th>IS_VIRTUAL</th>
+<th>IS_OPEN</th>
+<th>SEQUENCE_NUM</th>
+<th>VERSION</th>
+<th>MERCHANT_SHOW</th>
+<th>AGENT_SHOW</th>
+<th>CHANNEL_SHOW</th>
+<th>ADVISOR_SHOW</th>
+<th>WECHAT_SHOW</th>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</body>
+</html>
